@@ -12,7 +12,6 @@ namespace FullStackAuth_WebAPI.Models
 
         public bool Adopter { get; set; }
         public bool Admin { get; set; }
-
         public bool Volunteer { get; set; }
 
 
