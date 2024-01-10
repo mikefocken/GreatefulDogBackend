@@ -12,7 +12,7 @@ namespace FullStackAuth_WebAPI.DataTransferObjects
         public string status { get; set; }
 
         public int DogId  {get;set;}
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string DogBioForDisplayDto { get; set; }
     }
 }

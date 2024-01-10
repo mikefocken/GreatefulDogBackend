@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FullStackAuth_WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240106210233_AddDogEntity")]
-    partial class AddDogEntity
+    [Migration("20240109161035_DogFK")]
+    partial class DogFK
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,34 @@ namespace FullStackAuth_WebAPI.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("FullStackAuth_WebAPI.Models.AdoptionApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ApplicationDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("DogId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AdoptionApplications");
+                });
 
             modelBuilder.Entity("FullStackAuth_WebAPI.Models.Car", b =>
                 {
@@ -91,6 +119,30 @@ namespace FullStackAuth_WebAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Dogs");
+                });
+
+            modelBuilder.Entity("FullStackAuth_WebAPI.Models.Schedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("DogId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("FullStackAuth_WebAPI.Models.User", b =>
@@ -200,13 +252,13 @@ namespace FullStackAuth_WebAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c1886e81-f9e8-4cd1-8eb8-db6366bb8553",
+                            Id = "e4194871-68a2-4adf-9147-281ef148db99",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "4e8a3c14-72a0-4fe9-9f1b-38111ef7cdf1",
+                            Id = "f168e48e-3b4f-44ed-a116-4c2710e11817",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -314,6 +366,23 @@ namespace FullStackAuth_WebAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FullStackAuth_WebAPI.Models.AdoptionApplication", b =>
+                {
+                    b.HasOne("FullStackAuth_WebAPI.Models.Dog", "Dog")
+                        .WithMany()
+                        .HasForeignKey("DogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FullStackAuth_WebAPI.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Dog");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FullStackAuth_WebAPI.Models.Car", b =>
                 {
                     b.HasOne("FullStackAuth_WebAPI.Models.User", "Owner")
@@ -321,6 +390,23 @@ namespace FullStackAuth_WebAPI.Migrations
                         .HasForeignKey("OwnerId");
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("FullStackAuth_WebAPI.Models.Schedule", b =>
+                {
+                    b.HasOne("FullStackAuth_WebAPI.Models.Dog", "Dog")
+                        .WithMany()
+                        .HasForeignKey("DogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FullStackAuth_WebAPI.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Dog");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

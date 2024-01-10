@@ -3,6 +3,7 @@ using System;
 using FullStackAuth_WebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FullStackAuth_WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240109152324_modified Schedule model")]
+    partial class modifiedSchedulemodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,8 +113,8 @@ namespace FullStackAuth_WebAPI.Migrations
                     b.Property<string>("Size")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Weight")
-                        .HasColumnType("int");
+                    b.Property<float>("Weight")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -249,13 +252,13 @@ namespace FullStackAuth_WebAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5e408dd6-c643-4027-92de-7dbaf4a4ad18",
+                            Id = "14361951-358a-40d7-ace5-1f7a631faf07",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a1b8fe34-c30c-4e21-a72d-421934d162b9",
+                            Id = "4f96e2db-31dd-40c0-80a9-e5e5a3cee5c5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

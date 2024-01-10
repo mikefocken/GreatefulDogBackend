@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Org.BouncyCastle.Bcpg;
+using System.Runtime.InteropServices;
 
 namespace FullStackAuth_WebAPI.Models
 {
@@ -9,10 +11,12 @@ namespace FullStackAuth_WebAPI.Models
         public DateTime Date { get; set; }
 
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
 
-        [Required]
+        [ForeignKey ("Dog")]
         public int DogId { get; set; }
+        public Dog Dog { get; set; }
 
 
 

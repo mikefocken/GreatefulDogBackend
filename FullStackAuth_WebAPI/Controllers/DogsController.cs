@@ -4,6 +4,7 @@ using FullStackAuth_WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Drawing;
 using System.Linq.Expressions;
 using System.Security.Claims;
@@ -17,7 +18,6 @@ namespace FullStackAuth_WebAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-
     public class DogsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -25,11 +25,8 @@ namespace FullStackAuth_WebAPI.Controllers
         public DogsController(ApplicationDbContext context)
         {
             _context = context;
+
         }
-
-
-
-
 
         // GET api/DogsController
         //GetAll Dogs using DogBioForDisplay
@@ -161,7 +158,113 @@ namespace FullStackAuth_WebAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPost("MatchMaker")]
+        public IActionResult MatchMaker([FromBody] UserPreferencesDto userPreferences)
+        {
+            try
+            {
+                var allDogs = _context.Dogs.ToList(); 
+                var matchedDogs = new List<DogBioForDisplayDto>(); 
+
+                foreach (var d in allDogs)
+                {
+                    int matchCount = 0;
+                    if (MatchAgeRange(d.Age, userPreferences.Age)) matchCount++;
+                    if (MatchBreed(d.Breed, userPreferences.Breed)) matchCount++;
+                    if (MatchGender(d.Gender, userPreferences.Gender)) matchCount++;
+                    if (MatchSize(d.Size, userPreferences.Size)) matchCount++;
+                    if (MatchWeightRange(d.Weight, userPreferences.Weight)) matchCount++;
+                    if (MatchEnergyLevel(d.EnergyLevel, userPreferences.EnergyLevel)) matchCount++;
+                    if (MatchColor(d.Color, userPreferences.Color)) matchCount++;
+
+                    if (matchCount >= 5)
+                    {
+                        matchedDogs.Add(new DogBioForDisplayDto
+                        {
+                            Name = d.Name,
+                            Age = d.Age,
+                            Breed = d.Breed,
+                            Gender = d.Gender,
+                            Size = d.Size,
+                            Weight = d.Weight,
+                            EnergyLevel = d.EnergyLevel,
+                            Color = d.Color,
+                            IsAdopted = d.IsAdopted,
+                            Image = d.Image
+                            
+                        });
+                    }
+                }
+
+                return Ok(matchedDogs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            bool MatchAgeRange(int? dogAge, string preferredAgeRange)
+            {
+                if (string.IsNullOrEmpty(preferredAgeRange) || !dogAge.HasValue)
+                    return false;
+
+                var ageParts = preferredAgeRange.Split('-').Select(int.Parse).ToArray();
+                return dogAge >= ageParts[0] && dogAge <= ageParts[1];
+            }
+            bool MatchBreed(string dogBreed, string preferredBreed)
+            {
+                if (string.IsNullOrEmpty(preferredBreed))
+                    return false;
+
+                return string.Equals(dogBreed, preferredBreed, StringComparison.OrdinalIgnoreCase);
+            }
+
+            bool MatchGender(string dogGender, string preferredGender)
+            {
+                if (string.IsNullOrEmpty(preferredGender))
+                    return false;
+
+                return string.Equals(dogGender, preferredGender, StringComparison.OrdinalIgnoreCase);
+            }
+            bool MatchSize(string dogSize, string preferredSize)
+            {
+                if (string.IsNullOrEmpty(preferredSize))
+                    return false;
+
+                return string.Equals(dogSize, preferredSize, StringComparison.OrdinalIgnoreCase);
+            }
+
+            bool MatchWeightRange(int? dogWeight, string preferredWeightRange)
+            {
+                if (string.IsNullOrEmpty(preferredWeightRange) || !dogWeight.HasValue)
+                    return false;
+
+                var weightParts = preferredWeightRange.Split('-').Select(int.Parse).ToArray();
+                if (weightParts.Length != 2)
+                    return false; // Or handle this case differently
+
+                return dogWeight >= weightParts[0] && dogWeight <= weightParts[1];
+            }
+            
+            bool MatchEnergyLevel(string dogEnergyLevel, string preferredEnergyLevel)
+            {
+                if (string.IsNullOrEmpty(preferredEnergyLevel))
+                    return false;
+
+                return string.Equals(dogEnergyLevel, preferredEnergyLevel, StringComparison.OrdinalIgnoreCase);
+            }
+
+            bool MatchColor(string dogColor, string preferredColor)
+            {
+                if (string.IsNullOrEmpty(preferredColor))
+                    return false;
+
+                return string.Equals(dogColor, preferredColor, StringComparison.OrdinalIgnoreCase);
+            }
+
+        }
+
 
     }
 }
+
 

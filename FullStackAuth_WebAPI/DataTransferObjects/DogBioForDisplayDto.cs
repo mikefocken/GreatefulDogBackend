@@ -16,7 +16,7 @@ namespace FullStackAuth_WebAPI.DataTransferObjects
 
         public string Size { get; set; }
 
-        public float Weight { get; set; }
+        public int Weight { get; set; }
 
         public string EnergyLevel { get; set; } // "High, Medium and Low" i will need to figure that out.
 
