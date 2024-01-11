@@ -12,6 +12,8 @@ namespace FullStackAuth_WebAPI.Data
         public DbSet<AdoptionApplication> AdoptionApplications { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
 
+        public DbSet<Image> Images { get; set; }
+
         public ApplicationDbContext(DbContextOptions options)
     : base(options)
         {
